@@ -37,7 +37,6 @@ jobs:
         password: ${{ secrets.EC2_PASS }}
         port: 22
         script: |
-            echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
             sudo -S docker pull siddarthpaladi/node
             sudo -S docker stop node || true
             sudo -S docker rm node || true
