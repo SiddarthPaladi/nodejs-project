@@ -7,7 +7,7 @@ WORKDIR /usr/src/app
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install dependencies
+# Install dependency
 RUN npm install
 
 # Copy the rest of your application code
@@ -16,5 +16,5 @@ COPY . .
 # Expose port 8080 for the app
 EXPOSE 8080
 
-# Define the command to run your app
+# Define the commands to run your app
 CMD ["node", "index.js"]
