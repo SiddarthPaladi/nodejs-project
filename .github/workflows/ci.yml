@@ -6,49 +6,29 @@ on:
       - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      # Checks out your repository code
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
-      # Sets up Node.js version 18
-
-    - name: Install dependencies
-      run: npm install
-      # Installs Node.js dependencies
-
-    # Optional linting step, uncomment if you have a lint script
-    # - name: Lint code
-    #   run: npm run lint
-
-    - name: Build Docker image
-      run: docker build -t node .
-      # Builds a Docker image with the tag "node" using the Dockerfile in the repository
-
-    - name: Login to Docker Hub
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-      # Logs into Docker Hub using credentials stored in GitHub Secrets
-
-    - name: Push Docker image to Docker Hub
-      run: docker tag node ${{ secrets.DOCKER_USERNAME }}/node:latest && docker push ${{ secrets.DOCKER_USERNAME }}/node:latest
-      # Tags the Docker image and pushes it to Docker Hub
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v3
+#     - name: Set up Node.js
+#       uses: actions/setup-node@v3
+#       with:
+#         node-version: '18'
+#     - name: Install dependencies
+#       run: npm install
+#     - name: Build Docker image
+#       run: docker build -t node .
+#     - name: Login to Docker Hub
+#       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+#     - name: Push Docker image to Docker Hub
+#       run: docker tag node ${{ secrets.DOCKER_USERNAME }}/node:latest && docker push ${{ secrets.DOCKER_USERNAME }}/node:latest
 
   deploy:
-    needs: build
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-      # Checks out your repository code again for the deploy job
-
     - name: Deploy to EC2
       uses: appleboy/ssh-action@v0.1.8
       with:
@@ -61,4 +41,3 @@ jobs:
           docker stop node || true
           docker rm node || true
           docker run -d -p 3333:3333 --name my-app ${{ secrets.DOCKER_USERNAME }}/node:latest
-      # Uses appleboy/ssh-action to SSH into EC2 and deploy the Docker container
